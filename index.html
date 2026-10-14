@@ -22,12 +22,12 @@
       </section>
 
       <section class="panel config" aria-labelledby="config-title">
-        <div class="section-heading"><div><h2 id="config-title">Conexión al servidor</h2><p>Ingresa la URL pública de tu endpoint <code>/api/personas</code>.</p></div><span class="method">GET</span></div>
+        <div class="section-heading"><div><h2 id="config-title">Conexión al servidor</h2><p>Utiliza la ruta relativa <code>/api/personas</code> para acceder mediante el proxy de Vercel.</p></div><span class="method">GET</span></div>
         <form id="api-form">
           <label for="api-url">URL de la API</label>
-          <div class="input-row"><input type="url" id="api-url" name="url" placeholder="http://TU-IP-PUBLICA:8000/api/personas" required spellcheck="false" autocomplete="url"><button type="submit" id="load-btn"><span id="button-text">Consultar personas</span></button></div>
+          <div class="input-row"><input type="text" inputmode="url" id="api-url" name="url" placeholder="/api/personas" required spellcheck="false" autocomplete="url"><button type="submit" id="load-btn"><span id="button-text">Consultar personas</span></button></div>
         </form>
-        <p class="hint">Para la futura configuración de <em>rewrites</em>, cambia la URL por <code>/api/personas</code> (también acepta rutas relativas).</p>
+        <p class="hint">El navegador consulta Vercel por HTTPS; Vercel reenvía la petición a AWS mediante el rewrite.</p>
       </section>
 
       <section class="metrics" aria-label="Resumen de consulta">
@@ -43,7 +43,7 @@
           <table><thead><tr><th>ID</th><th>Nombre</th><th>Edad</th><th>Ciudad</th><th>Correo electrónico</th></tr></thead><tbody id="people-body"></tbody></table>
         </div>
       </section>
-      <aside class="footnote"><strong>Nota HTTPS:</strong> Si la web se abre desde Vercel (HTTPS) y AWS responde solo por HTTP, el navegador bloqueará el <code>fetch</code> por contenido mixto. Para ese caso será necesario el proxy inverso con <em>rewrites</em> o habilitar HTTPS en la API.</aside>
+      <aside class="footnote"><strong>Nota HTTPS:</strong> Para publicar: configura la IPv4 pública de EC2 en <code>vercel.json</code>. El tramo Vercel → AWS aún utiliza HTTP sin cifrar; para producción se recomienda habilitar HTTPS también en AWS.</aside>
     </main>
     <footer>Proyecto académico · Cliente web con JavaScript Fetch API</footer>
   </div>

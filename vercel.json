@@ -1,0 +1,10 @@
+
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "http://54.91.71.133:8000/api/:path*"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 "use strict";
 
-const DEFAULT_API_URL = "http://54.91.71.133:8000/api/personas";
+const DEFAULT_API_URL = "/api/personas";
 const STORAGE_KEY = "aws-personas-api-url";
 
 const form = document.querySelector("#api-form");
@@ -16,7 +16,8 @@ const httpStatus = document.querySelector("#http-status");
 const lastUpdate = document.querySelector("#last-update");
 const caption = document.querySelector("#results-caption");
 
-urlInput.value = localStorage.getItem(STORAGE_KEY) || DEFAULT_API_URL;
+urlInput.value = DEFAULT_API_URL;
+localStorage.removeItem(STORAGE_KEY); // Elimina la URL HTTP anterior guardada.
 
 function showNotice(message, kind = "") {
   notice.textContent = message;
@@ -65,7 +66,7 @@ async function loadPeople() {
     return;
   }
 
-  localStorage.setItem(STORAGE_KEY, url);
+  // No guardamos URLs antiguas: el proxy es la opción predeterminada.
   loadButton.disabled = true;
   refreshButton.disabled = true;
   buttonText.textContent = "Consultando…";

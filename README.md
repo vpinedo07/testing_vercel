@@ -1,37 +1,17 @@
-# Cliente web – API AWS EC2
+# Cliente API AWS — Vercel con proxy inverso
 
-Sitio estático HTML + CSS + JavaScript para consumir el endpoint `GET /api/personas` de un servidor FastAPI alojado en AWS EC2 Windows Server.
+## Preparación
+1. Abrir `vercel.json` y reemplazar `TU-IP-PUBLICA` por la IP pública real de la instancia EC2.
+2. Confirmar que la API FastAPI responde desde Internet en `http://IP:8000/api/personas` y que las reglas de AWS Security Group y Windows Firewall permiten la conexión.
+3. Subir los archivos `index.html`, `styles.css`, `app.js` y `vercel.json` a la raíz del proyecto de GitHub conectado con Vercel.
+4. Esperar a que finalice el despliegue y visitar `https://TU-PROYECTO.vercel.app/api/personas`. Debe devolver JSON.
+5. Abrir la página principal y pulsar Consultar personas con la ruta `/api/personas`.
 
-## Archivos
-- `index.html`: interfaz y tabla.
-- `styles.css`: diseño responsivo.
-- `app.js`: consumo `fetch()`, validación del JSON, manejo de errores y renderizado seguro de filas.
+## Cómo funciona
+El navegador hace `fetch('/api/personas')` con HTTPS a Vercel. Vercel reenvía al origen HTTP de AWS según `vercel.json`. El navegador no llama directamente a HTTP, evitando el bloqueo por contenido mixto. Como el tráfico Vercel → AWS no está cifrado, el diseño es sólo para datos ficticios de prueba; configura HTTPS en el backend para producción.
 
-## Respuesta esperada
-
-```json
-{
-  "total": 2,
-  "datos": [
-    {"id": 1, "nombre": "Ana López", "edad": 24, "ciudad": "Pachuca", "correo": "ana@example.com"},
-    {"id": 2, "nombre": "Carlos Pérez", "edad": 30, "ciudad": "CDMX", "correo": "carlos@example.com"}
-  ]
-}
-```
-
-## Probar localmente
-
-1. En la carpeta del proyecto ejecuta `python -m http.server 5500`.
-2. Abre `http://localhost:5500`.
-3. Introduce `http://IP_PUBLICA_EC2:8000/api/personas` y selecciona **Consultar personas**.
-4. El endpoint debe estar funcionando, el Security Group y Firewall de Windows deben permitir la conexión y FastAPI debe autorizar CORS.
-
-## Publicar en GitHub / Vercel
-
-Copia los tres archivos a la raíz de tu repositorio, realiza commit y push a `main`. Vercel lo desplegará automáticamente (Framework Preset: Other). Puedes configurar la URL de la API en la interfaz; se guarda localmente en el navegador.
-
-**Limitación:** Vercel entrega tu frontend mediante HTTPS. Si la API de AWS solo atiende por HTTP, el navegador bloqueará `fetch()` (mixed content). Para que funcione desde Vercel, usa HTTPS en AWS o configura un rewrite/proxy adecuado en Vercel y cambia la URL de la interfaz a `/api/personas`.
-
-## En una etapa posterior: rewrites
-
-Cuando se configure el proxy, la app no necesita cambios de código: basta con introducir `/api/personas` como URL del endpoint. No hay rewrites configurados en esta entrega.
+## Importante
+- Si no reemplazas `TU-IP-PUBLICA`, el despliegue no tendrá un destino real.
+- Si Vercel devuelve 502/504, verifica accesibilidad de EC2 desde fuera de tu IP, conectividad y aplicación escuchando en `0.0.0.0:8000`.
+- Si usas IP pública dinámica, ésta puede cambiar al detener/arrancar EC2. Para una dirección estable, evalúa una Elastic IP.
+- El proxy no protege por sí solo el acceso directo al puerto 8000 de AWS.
